@@ -38,16 +38,10 @@ public class GT4500 implements SpaceShip {
 
     boolean firingSuccess = false;
 
-    switch (firingMode) {
-      case SINGLE:
+    if (firingMode == FiringMode.SINGLE) {
         firingSuccess = fireTorpedoSingle();
-        break;
-
-      case ALL:
-        // try to fire both of the torpedo stores
-        //TODO implement feature
+    } else {
     	firingSuccess = true;
-        break;
     }
 
     return firingSuccess;
@@ -88,6 +82,7 @@ public class GT4500 implements SpaceShip {
             // if both of the stores are empty, nothing can be done, return failure
           }
         }
+	  return false;
   }
 
 }
