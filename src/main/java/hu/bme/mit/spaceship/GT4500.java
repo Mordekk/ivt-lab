@@ -1,4 +1,5 @@
 package hu.bme.mit.spaceship;
+import static org.mockito.Mockito.*;
 
 /**
 * A simple spaceship with two proton torpedo stores and four lasers
@@ -15,7 +16,12 @@ public class GT4500 implements SpaceShip {
     this.secondaryTorpedoStore = new TorpedoStore(10);
   }
 
-  public boolean fireLaser(FiringMode firingMode) {
+public GT4500(TorpedoStore primary, TorpedoStore secondary) {
+    this.primaryTorpedoStore = primary;
+    this.secondaryTorpedoStore = secondary;
+}
+
+    public boolean fireLaser(FiringMode firingMode) {
     // TODO not implemented yet
     return false;
   }
@@ -41,7 +47,7 @@ public class GT4500 implements SpaceShip {
     if (firingMode == FiringMode.SINGLE) {
         firingSuccess = fireTorpedoSingle();
     } else {
-    	firingSuccess = true;
+    	firingSuccess = fireTorpedoAll();
     }
 
     return firingSuccess;
@@ -68,21 +74,28 @@ public class GT4500 implements SpaceShip {
         else {
           // try to fire the primary first
         	if (! primaryTorpedoStore.isEmpty()) {
-        		// although secondary was fired last time, but primary is empty
-        		// thus try to fire secondary again
-	        	if (! secondaryTorpedoStore.isEmpty()) {
-	        			wasPrimaryFiredLast = false;
-	        			return secondaryTorpedoStore.fire(1);
-	        	}
-	        	else {
-		            wasPrimaryFiredLast = true;
-		            return primaryTorpedoStore.fire(1);
-		        }
+                wasPrimaryFiredLast = true;
+                return primaryTorpedoStore.fire(1);
+            } else {
+                // although secondary was fired last time, but primary is empty
+                // thus try to fire secondary again
+                 if (! secondaryTorpedoStore.isEmpty()) {
+                     wasPrimaryFiredLast = false;
+                     return secondaryTorpedoStore.fire(1);
+                 }
+            }
 
             // if both of the stores are empty, nothing can be done, return failure
-          }
+
         }
 	  return false;
   }
+
+  public boolean fireTorpedoAll() {
+      if (!primaryTorpedoStore.isEmpty() && !secondaryTorpedoStore.isEmpty())
+          return (primaryTorpedoStore.fire(1) && secondaryTorpedoStore.fire(1));
+      return false;
+  }
+
 
 }
